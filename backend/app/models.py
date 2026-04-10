@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
+    hashed_password: Optional[str] = Field(default=None)
     monthly_income: float
     target_savings_rate: float 
     peer_cohort: str 

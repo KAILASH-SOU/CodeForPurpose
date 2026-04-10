@@ -3,7 +3,7 @@ from typing import Annotated, Literal, TypedDict
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 from langgraph.prebuilt import create_react_agent
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from sqlmodel import Session, select
 
 from app.database import engine
@@ -52,13 +52,14 @@ def get_insights(user_id: int) -> str:
     Orchestrates the LangGraph agent to fetch anomalies and forecast data,
     and returns a 3-bullet-point summary.
     """
-    # Assuming GEMINI_API_KEY is available in the environment 
-    # (or GOOGLE_API_KEY which is naturally picked up by ChatGoogleGenerativeAI)
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0)
+    # Assuming OPENAI_API_KEY is available in the environment 
+    # (which is naturally picked up by ChatOpenAI)
+    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
     agent = create_react_agent(llm, tools)
     
     prompt = f"""
     You are a financial advisor AI. The user_id is {user_id}. 
+    All currency values are in INR (₹).
     Use the available tools to fetch their spending anomalies and forecast data.
     After reviewing the raw mathematical outputs, you MUST generate a 3-bullet-point summary.
     The response MUST explicitly follow this format:

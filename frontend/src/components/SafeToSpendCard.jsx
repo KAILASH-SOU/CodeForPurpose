@@ -1,61 +1,112 @@
 import React from 'react';
-import { ShieldCheck, Calendar, Wallet, TrendingDown } from 'lucide-react';
+import { ShieldCheck, Calendar, TrendingDown, TrendingUp } from 'lucide-react';
 
 const SafeToSpendCard = ({ data }) => {
-  if (!data) return <div className="stat-card glass-panel loading">Loading Safe to Spend...</div>;
+  if (!data) return (
+    <div className="safe-to-spend-container">
+      <div className="card stat-card loading">Loading budget data...</div>
+      <div className="card stat-card loading">Loading upcoming bills...</div>
+    </div>
+  );
 
   const {
     safe_to_spend,
     current_balance,
     upcoming_recurring,
     predicted_variable_spend,
-    uncertainty_95,
-    upcoming_recurring_items,
+    upcoming_recurring_items = [],
     horizon_days
   } = data;
 
+  const totalForecasted = (upcoming_recurring || 0) + (predicted_variable_spend || 0);
+
+  let statusClass, statusText, StatusIcon;
+  if (safe_to_spend > 5000) {
+    statusClass = 'badge-success'; statusText = 'Healthy buffer'; StatusIcon = TrendingUp;
+  } else if (safe_to_spend > 0) {
+    statusClass = 'badge-warning'; statusText = 'Spend carefully'; StatusIcon = TrendingDown;
+  } else {
+    statusClass = 'badge-danger'; statusText = 'Potential overdraft'; StatusIcon = TrendingDown;
+  }
+
   return (
     <div className="safe-to-spend-container">
-      <div className="stat-card main-stat glass-panel">
+      {/* Safe to Spend */}
+      <div className="card stat-card">
         <div className="stat-header">
-          <ShieldCheck size={20} color="var(--natwest-pink)" />
-          <span>Safe to Spend</span>
+          <ShieldCheck size={15} color="var(--purple)" />
+          Safe to Spend
         </div>
-        <div className="stat-value">£{safe_to_spend.toLocaleString()}</div>
-        <div className="stat-subtitle">Next {horizon_days} days projection</div>
-        
+
+        <div className="stat-value">
+          {safe_to_spend < 0 ? '-' : ''}₹{Math.abs(safe_to_spend).toLocaleString('en-IN')}
+        </div>
+        <div className="stat-subtitle">Available over the next {horizon_days} days</div>
+
+        <span className={`badge ${statusClass}`} style={{ marginBottom: '20px', display: 'inline-flex' }}>
+          <StatusIcon size={12} />
+          {statusText}
+        </span>
+
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
+          {safe_to_spend > 5000
+            ? `Your finances look solid. After all projected bills and spending, you have a comfortable ₹${safe_to_spend.toLocaleString('en-IN')} remaining.`
+            : safe_to_spend > 0
+            ? `Tight margin ahead. Only ₹${safe_to_spend.toLocaleString('en-IN')} remains after upcoming obligations. Avoid discretionary spend this week.`
+            : `Projected shortfall of ₹${Math.abs(safe_to_spend).toLocaleString('en-IN')}. Review your upcoming expenses and cut non-essentials.`
+          }
+        </p>
+
+        <hr />
         <div className="stat-details">
           <div className="detail-item">
             <span className="label">Current Balance</span>
-            <span className="value">£{current_balance.toLocaleString()}</span>
+            <span className="value">₹{(current_balance || 0).toLocaleString('en-IN')}</span>
           </div>
-          <div className="detail-separator"></div>
+          <div style={{ width: '1px', height: '32px', background: 'var(--border)' }} />
           <div className="detail-item">
-            <span className="label">Forecasted Spend</span>
-            <span className="value">£{(upcoming_recurring + predicted_variable_spend).toLocaleString()}</span>
+            <span className="label">Projected Costs</span>
+            <span className="value">₹{totalForecasted.toLocaleString('en-IN')}</span>
           </div>
         </div>
       </div>
 
-      <div className="stat-card secondary-stat glass-panel">
+      {/* Upcoming Bills */}
+      <div className="card stat-card">
         <div className="stat-header">
-          <Calendar size={20} color="var(--natwest-purple)" />
-          <span>Upcoming Obligations</span>
+          <Calendar size={15} color="var(--purple)" />
+          Upcoming Bills
         </div>
-        <div className="bill-list">
-          {upcoming_recurring_items.length > 0 ? (
-            upcoming_recurring_items.map((item, idx) => (
-              <div key={idx} className="bill-item">
-                <div className="bill-info">
+
+        {upcoming_recurring_items.length > 0 ? (
+          <div className="bill-list">
+            {upcoming_recurring_items.map((item, i) => (
+              <div key={i} className="bill-item">
+                <div>
                   <span className="bill-name">{item.merchant}</span>
-                  <span className="bill-date">{item.expected_date}</span>
+                  <span className="bill-date">Expected {item.expected_date}</span>
                 </div>
-                <div className="bill-amount">£{item.amount.toLocaleString()}</div>
+                <span className="bill-amount">-₹{item.amount.toLocaleString('en-IN')}</span>
               </div>
-            ))
-          ) : (
-            <p className="no-bills">No recurring bills in this window.</p>
-          )}
+            ))}
+          </div>
+        ) : (
+          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+            No recurring bills detected in this window.
+          </div>
+        )}
+
+        <div style={{
+          marginTop: '16px',
+          padding: '12px 14px',
+          background: 'var(--bg)',
+          borderRadius: '8px',
+          border: '1px solid var(--border)',
+          fontSize: '12px',
+          color: 'var(--text-secondary)',
+          lineHeight: 1.6
+        }}>
+          These fixed commitments are already deducted from your Safe to Spend figure above.
         </div>
       </div>
     </div>

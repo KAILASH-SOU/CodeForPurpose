@@ -1,4 +1,5 @@
 import math
+import random
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 
@@ -207,3 +208,121 @@ def detect_anomalies(
     # Sort by z-score descending to show worst offenders first
     anomalies.sort(key=lambda x: x["z_score"], reverse=True)
     return anomalies
+
+def calculate_investment_projection(
+    current_balance: float, 
+    monthly_income: float, 
+    current_savings_rate: float, 
+    new_savings_rate: float, 
+    years: int = 10,
+    annual_return_rate: float = 0.07
+) -> List[Dict[str, Any]]:
+    """
+    Projects the wealth accumulation over 'years' for two different savings paths.
+    """
+    monthly_return_rate = annual_return_rate / 12
+    
+    current_savings_monthly = monthly_income * current_savings_rate
+    new_savings_monthly = monthly_income * new_savings_rate
+    
+    projection = []
+    
+    current_plan_balance = current_balance
+    new_plan_balance = current_balance
+    
+    # Starting point (Year 0)
+    projection.append({
+        "year": 0,
+        "current_plan": round(current_plan_balance, 2),
+        "new_plan": round(new_plan_balance, 2)
+    })
+    
+    for year in range(1, years + 1):
+        for _ in range(12):
+            # Compound interest + monthly contribution
+            current_plan_balance = (current_plan_balance * (1 + monthly_return_rate)) + current_savings_monthly
+            new_plan_balance = (new_plan_balance * (1 + monthly_return_rate)) + new_savings_monthly
+            
+        projection.append({
+            "year": year,
+            "current_plan": round(current_plan_balance, 2),
+            "new_plan": round(new_plan_balance, 2)
+        })
+        
+    return projection
+
+def calculate_overdraft_probability(
+    transactions: List[Any],
+    current_balance: float,
+    days_until_income: int,
+    iterations: int = 1000
+) -> float:
+    """
+    Runs a Monte Carlo simulation (1000 iterations) using historical spend variance
+    to calculate the probability of the balance hitting zero before the next income event.
+    """
+    if not transactions or days_until_income <= 0:
+        return 0.0
+
+    today = max(t.timestamp for t in transactions)
+    
+    # 1. Deduct strict upcoming recurring bills in this window
+    upcoming_recurring_total = 0.0
+    recurring_txs = [t for t in transactions if t.is_recurring and t.amount < 0]
+    
+    # Very naive scheduling for the hackathon MVP
+    merchant_dates = {}
+    for t in recurring_txs:
+        merchant_dates.setdefault(t.merchant_name, []).append(t)
+        
+    for merchant, txs in merchant_dates.items():
+        txs.sort(key=lambda x: x.timestamp)
+        last_tx = txs[-1]
+        # Assume roughly monthly
+        next_date = last_tx.timestamp + timedelta(days=30)
+        if today < next_date <= today + timedelta(days=days_until_income):
+            upcoming_recurring_total += abs(last_tx.amount)
+
+    # 2. Variable Spend Stats
+    variable_txs = [t for t in transactions if not t.is_recurring and t.amount < 0]
+    daily_spend = {}
+    for t in variable_txs:
+        d = t.timestamp.date()
+        daily_spend[d] = daily_spend.get(d, 0.0) + abs(t.amount)
+        
+    all_dates = [t.timestamp.date() for t in variable_txs]
+    if all_dates:
+        start_date = min(all_dates)
+        end_date = max(all_dates)
+        num_days = (end_date - start_date).days + 1
+        daily_list = [daily_spend.get(start_date + timedelta(days=i), 0.0) for i in range(num_days)]
+        
+        mean_daily = sum(daily_list) / num_days
+        variance = sum((x - mean_daily) ** 2 for x in daily_list) / num_days
+        std_dev = math.sqrt(variance)
+    else:
+        mean_daily = 0.0
+        std_dev = 0.0
+
+    # 3. Fast Monte Carlo Simulation
+    effective_balance = current_balance - upcoming_recurring_total
+    
+    if effective_balance <= 0:
+        return 100.0 # Guaranteed overdraft
+        
+    if std_dev == 0 and mean_daily * days_until_income < effective_balance:
+        return 0.0
+
+    overdraft_count = 0
+    for _ in range(iterations):
+        sim_balance = effective_balance
+        for _ in range(days_until_income):
+            # Sample daily spend using Gauss (can't spend negative)
+            sim_spend = max(0.0, random.gauss(mean_daily, std_dev))
+            sim_balance -= sim_spend
+            if sim_balance < 0:
+                overdraft_count += 1
+                break
+                
+    probability = (overdraft_count / iterations) * 100.0
+    return round(probability, 1)
