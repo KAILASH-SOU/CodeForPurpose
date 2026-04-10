@@ -137,3 +137,73 @@ def calculate_safe_to_spend(
         "lower_bound_safe": round(lower_bound_safe, 2),
         "upper_bound_safe": round(upper_bound_safe, 2)
     }
+
+def detect_anomalies(
+    transactions: List[Any], 
+    window_days: int = 30, 
+    z_score_threshold: float = 2.0
+) -> List[Dict[str, Any]]:
+    """
+    Detects anomalous spending patterns (Hidden Inflation & Lifestyle Creep) 
+    by checking recent transactions against statistical bounds: y_hat +/- Z * sigma.
+    """
+    if not transactions:
+        return []
+
+    today = max(t.timestamp for t in transactions)
+    window_start = today - timedelta(days=window_days)
+    
+    # 1. Separate transactions into historical vs recent
+    recent_txs = [t for t in transactions if t.timestamp > window_start and t.amount < 0]
+    historical_txs = [t for t in transactions if t.timestamp <= window_start and t.amount < 0]
+    
+    if not historical_txs or not recent_txs:
+        return []
+
+    # 2. Compute mean and variance per category
+    category_stats = {}
+    historical_by_cat = {}
+    
+    for t in historical_txs:
+        historical_by_cat.setdefault(t.category, []).append(abs(t.amount))
+        
+    for cat, amounts in historical_by_cat.items():
+        if len(amounts) < 3: # Need minimum data points for std dev
+            continue
+            
+        mean_val = sum(amounts) / len(amounts)
+        variance = sum((x - mean_val) ** 2 for x in amounts) / len(amounts)
+        std_dev = math.sqrt(variance)
+        
+        category_stats[cat] = {
+            "mean": mean_val,
+            "std_dev": std_dev
+        }
+
+    # 3. Detect anomalies in recent transactions
+    anomalies = []
+    for t in recent_txs:
+        cat = t.category
+        if cat in category_stats:
+            stats = category_stats[cat]
+            expected = stats["mean"]
+            sigma = stats["std_dev"]
+            
+            # y_hat + Z * sigma
+            if sigma > 0:
+                z_score = (abs(t.amount) - expected) / sigma
+                if z_score > z_score_threshold:
+                    anomalies.append({
+                        "transaction_id": t.id,
+                        "merchant_name": t.merchant_name,
+                        "category": cat,
+                        "amount": abs(t.amount),
+                        "expected_amount": round(expected, 2),
+                        "z_score": round(z_score, 2),
+                        "date": str(t.timestamp.date()),
+                        "reason": f"Amount is unusually high compared to historical average of {round(expected, 2)} (Z-Score: {round(z_score, 2)})"
+                    })
+                    
+    # Sort by z-score descending to show worst offenders first
+    anomalies.sort(key=lambda x: x["z_score"], reverse=True)
+    return anomalies

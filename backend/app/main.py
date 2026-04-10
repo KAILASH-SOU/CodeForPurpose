@@ -8,6 +8,7 @@ from sqlmodel import Session, select
 from app.database import get_session
 from app.models import Transaction, User
 from app.analytics import calculate_sma, calculate_safe_to_spend
+from app.agent import get_insights
 
 app = FastAPI(title="NatWest AI Hackathon API")
 
@@ -90,6 +91,21 @@ def get_safe_to_spend(
         "username": user.username,
         **analysis
     }
+
+@app.get("/agent/insights/{user_id}")
+def get_user_insights(user_id: int):
+    """
+    Triggered on login (or via daily cron). Runs the LangGraph agent to fetch anomalies,
+    forecast data, and returns a human-readable 3-bullet-point summary.
+    """
+    try:
+        summary = get_insights(user_id)
+        return {
+            "user_id": user_id,
+            "insights_summary": summary
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
