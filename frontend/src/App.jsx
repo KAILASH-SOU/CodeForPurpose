@@ -149,7 +149,6 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
     { id: 'section-analytics', key: 'analytics', Icon: BarChart3,       label: 'Analytics' },
     { id: 'section-goals',     key: 'goals',     Icon: Trophy,           label: 'Goals' },
     { id: 'section-peers',     key: 'peers',     Icon: Users,            label: 'Peers' },
-    { id: null,                key: 'settings',  Icon: Settings,         label: 'Settings' },
   ];
 
   const hour = new Date().getHours();
@@ -220,7 +219,7 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
                 {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
             </div>
-            <span className="badge badge-accent">
+            <span className="badge badge-pink">
               <Activity size={11} />
               AI Active
             </span>
