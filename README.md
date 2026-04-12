@@ -1,6 +1,5 @@
 <div align="center">
-  <!-- Place your logo or a brilliant hero banner here -->
-  <img src="https://via.placeholder.com/800x300?text=NatWest+SafeSpend+Banner" alt="NatWest SafeSpend Banner" width="100%" />
+  <img src="docs/screenshots/landing.png" alt="NatWest SafeSpend Landing Page" width="100%" />
 
   # NatWest SafeSpend
   
@@ -12,7 +11,7 @@
   [![Built with React](https://img.shields.io/badge/React-19-blue?logo=react)](#)
   [![Built with FastAPI](https://img.shields.io/badge/FastAPI-Python-green?logo=fastapi)](#)
 
-  [**Live Demo**](https://code-for-purpose-gamma.vercel.app/) • [**Getting Started**](#local-development)
+  [**Live Demo**](https://code-for-purpose-uf74.vercel.app/) • [**Getting Started**](#local-development)
   
 </div>
 
@@ -21,13 +20,12 @@
 ##  Live Demo
 | Service | URL |
 |---------|-----|
-| **Frontend** | [https://code-for-purpose-gamma.vercel.app/](https://code-for-purpose-gamma.vercel.app/) |
+| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-uf74.vercel.app/) |
 | **Backend**  | Deployed on Render |
 
 <div align="center">
-  <!-- Place a screenshot of your main dashboard here -->
-  <img src="https://via.placeholder.com/800x450?text=Dashboard+Screenshot" alt="Dashboard Screenshot" width="100%" />
-  <sub><em>The main SafeSpend Dashboard showing Safe to Spend limits and Overdraft Risk.</em></sub>
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard Screenshot" width="100%" />
+  <sub><em>The main SafeSpend Dashboard — Safe to Spend balance, upcoming bills, and daily spending trend.</em></sub>
 </div>
 
 ---
@@ -46,8 +44,16 @@ Experience the platform using our pre-seeded cohort data. Login with any of thes
 ##  Features & Functionality
 
 <div align="center">
-  <!-- Place an animated GIF or distinct feature collage here -->
-  <img src="https://via.placeholder.com/800x250?text=Feature+Highlight+GIF+or+Image" alt="Feature Highlight" width="100%" />
+  <table>
+    <tr>
+      <td><img src="docs/screenshots/spending-trend.png" alt="Spending Trend & Overdraft Risk" width="100%" /></td>
+      <td><img src="docs/screenshots/peer-benchmarking.png" alt="Peer Benchmarking & AI Reality Check" width="100%" /></td>
+    </tr>
+    <tr>
+      <td><sub><em>Daily Spending Trend (7-day SMA) and Monte Carlo Overdraft Risk Simulation</em></sub></td>
+      <td><sub><em>Peer Benchmarking radar chart and AI-powered Reality Check</em></sub></td>
+    </tr>
+  </table>
 </div>
 
 - **Safe to Spend** — A real-time balance forecast that aggressively deducts upcoming recurring bills to give you your *actual* spending limit.
@@ -69,8 +75,9 @@ Experience the platform using our pre-seeded cohort data. Login with any of thes
 | **AI / NLP** | OpenAI GPT integration orchestrated via LangChain/LangGraph |
 
 <div align="center">
-  <!-- Optional: An architecture or tech stack diagram here -->
-  <img src="https://via.placeholder.com/800x300?text=Architecture+Diagram" alt="Architecture Diagram" width="100%" />
+  <img src="docs/screenshots/signup.png" alt="Signup Page with Demo Accounts" width="60%" />
+  <br/>
+  <sub><em>Signup page with pre-seeded demo account quick-access cards</em></sub>
 </div>
 
 ---
