@@ -233,7 +233,7 @@ def get_overdraft_risk(user_id: int, session: Session = Depends(get_session)):
             
         days_until_income = (next_income_date - today).days
         
-        prob = calculate_overdraft_probability(transactions, current_balance, days_until_income)
+        prob = calculate_overdraft_probability(transactions, current_balance, days_until_income, user_id=user_id)
         
         return {
             "user_id": user_id,

@@ -255,6 +255,7 @@ def calculate_overdraft_probability(
     transactions: List[Any],
     current_balance: float,
     days_until_income: int,
+    user_id: int = 0,
     iterations: int = 1000
 ) -> float:
     """
@@ -313,12 +314,16 @@ def calculate_overdraft_probability(
     if std_dev == 0 and mean_daily * days_until_income < effective_balance:
         return 0.0
 
+    # Seed with deterministic value so same user+data always gives same score.
+    # Seed changes naturally when balance or days_until_income change.
+    seed_value = int(user_id * 1000 + abs(round(current_balance)) + days_until_income)
+    rng = random.Random(seed_value)
+
     overdraft_count = 0
     for _ in range(iterations):
         sim_balance = effective_balance
         for _ in range(days_until_income):
-            # Sample daily spend using Gauss (can't spend negative)
-            sim_spend = max(0.0, random.gauss(mean_daily, std_dev))
+            sim_spend = max(0.0, rng.gauss(mean_daily, std_dev))
             sim_balance -= sim_spend
             if sim_balance < 0:
                 overdraft_count += 1
