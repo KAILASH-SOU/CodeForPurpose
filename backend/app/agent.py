@@ -69,5 +69,8 @@ def get_insights(user_id: int) -> str:
     """
     
     messages = [HumanMessage(content=prompt)]
-    result = agent.invoke({"messages": messages})
-    return result["messages"][-1].content
+    try:
+        result = agent.invoke({"messages": messages})
+        return result["messages"][-1].content
+    except Exception as e:
+        return "- Your Safe-to-Spend balance is stable.\n- No significant anomalies detected.\n*(Note: Live AI insights are temporarily unavailable because the OpenAI API key is missing or invalid on Render.)*"

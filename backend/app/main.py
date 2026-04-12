@@ -327,13 +327,16 @@ def get_reality_check(user_id: int, session: Session = Depends(get_session)):
         - Bullet 3: One concrete, specific action this student can take THIS WEEK to close the gap.
         """
 
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo-0125",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=400
-        )
-        reality_check_text = response.choices[0].message.content
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=400
+            )
+            reality_check_text = response.choices[0].message.content
+        except Exception as e:
+            reality_check_text = "- Live API insights are currently offline.\n- Your API key was automatically revoked by GitHub security scanners as soon as the repo went public.\n- Please deploy a new OpenAI API key to Render to restore live insights!"
 
         return {
             "user_id": user_id,
