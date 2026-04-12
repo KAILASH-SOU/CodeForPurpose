@@ -3,7 +3,7 @@ from typing import Annotated, Literal, TypedDict
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 from langgraph.prebuilt import create_react_agent
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from sqlmodel import Session, select
 
 from app.database import engine
@@ -53,8 +53,8 @@ def get_insights(user_id: int) -> str:
     and returns a 3-bullet-point summary.
     """
     # Assuming OPENAI_API_KEY is available in the environment 
-    # (which is naturally picked up by ChatOpenAI)
-    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+    # (which is naturally picked up by ChatGoogleGenerativeAI)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
     agent = create_react_agent(llm, tools)
     
     prompt = f"""
@@ -73,4 +73,4 @@ def get_insights(user_id: int) -> str:
         result = agent.invoke({"messages": messages})
         return result["messages"][-1].content
     except Exception as e:
-        return "- Your Safe-to-Spend balance is stable.\n- No significant anomalies detected.\n*(Note: Live AI insights are temporarily unavailable because the OpenAI API key is missing or invalid on Render.)*"
+        return "- Your Safe-to-Spend balance is stable.\n- No significant anomalies detected.\n*(Note: Live AI insights are temporarily unavailable because the Gemini API key is missing or invalid on Render.)*"

@@ -12,8 +12,8 @@ from app.models import Transaction, User
 from app.analytics import calculate_sma, calculate_safe_to_spend, calculate_investment_projection, calculate_overdraft_probability
 from app.agent import get_insights
 from app.cohort_benchmarks import get_cohort
-from openai import OpenAI
-
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import HumanMessage
 class SignupRequest(BaseModel):
     username: str
     password: str
@@ -301,8 +301,7 @@ def get_reality_check(user_id: int, session: Session = Depends(get_session)):
             "emergency_fund_months": cohort["emergency_fund_months"],
         }
 
-        # ── OpenAI Reality Check ─────────────────────────────────────────────
-        client = OpenAI()
+        # ── Gemini Reality Check ─────────────────────────────────────────────
         prompt = f"""
         You are a sharp, empathetic financial coach for students in India.
         You are given two financial profiles:
@@ -328,15 +327,11 @@ def get_reality_check(user_id: int, session: Session = Depends(get_session)):
         """
 
         try:
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo-0125",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=400
-            )
-            reality_check_text = response.choices[0].message.content
+            llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7, max_tokens=400)
+            response = llm.invoke([HumanMessage(content=prompt)])
+            reality_check_text = response.content
         except Exception as e:
-            reality_check_text = f"API DEBUG INFO: {type(e).__name__} - {str(e)}"
+            reality_check_text = f"API DEBUG INFO: {type(e).__name__} - {str(e)}\n\n*(Note: Live AI insights are temporarily unavailable because the Gemini API key is missing or invalid on Render.)*"
 
         return {
             "user_id": user_id,
