@@ -50,7 +50,7 @@ export default function OverdraftGauge({ userId }) {
         <div>
           <h2 style={{ fontSize: '16px', fontWeight: 700 }}>Overdraft Risk</h2>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '3px' }}>
-            Monte Carlo simulation — probability of reaching £0 in the next {daysLeft} days
+            Monte Carlo simulation — probability of reaching ₹0 in the next {daysLeft} days
           </p>
         </div>
         <span className={`badge ${badgeClass}`}>
