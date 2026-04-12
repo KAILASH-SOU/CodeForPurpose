@@ -13,6 +13,10 @@
     "moduleDetection": "force",
     "noEmit": true,
 
+    /* React */
+    "jsx": "react-jsx",
+    "allowJs": true,
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
