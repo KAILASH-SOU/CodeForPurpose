@@ -3,7 +3,7 @@ from typing import Annotated, Literal, TypedDict
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 from langgraph.prebuilt import create_react_agent
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from sqlmodel import Session, select
 
 from app.database import engine
@@ -52,10 +52,7 @@ def get_insights(user_id: int) -> str:
     Orchestrates the LangGraph agent to fetch anomalies and forecast data,
     and returns a 3-bullet-point summary.
     """
-    # Assuming OPENAI_API_KEY is available in the environment 
-    # (which is naturally picked up by ChatGoogleGenerativeAI)
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
-    agent = create_react_agent(llm, tools)
+    # Moved instantiation inside try/except to catch missing keys on instantiation
     
     prompt = f"""
     You are a financial advisor AI. The user_id is {user_id}. 
@@ -70,7 +67,10 @@ def get_insights(user_id: int) -> str:
     
     messages = [HumanMessage(content=prompt)]
     try:
+        # Assuming OPENAI_API_KEY is available in the environment 
+        llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+        agent = create_react_agent(llm, tools)
         result = agent.invoke({"messages": messages})
         return result["messages"][-1].content
     except Exception as e:
-        return "- Your Safe-to-Spend balance is stable.\n- No significant anomalies detected.\n*(Note: Live AI insights are temporarily unavailable because the Gemini API key is missing or invalid on Render.)*"
+        return "- Your Safe-to-Spend balance is stable.\n- No significant anomalies detected.\n*(Note: Live AI insights are temporarily unavailable because the OpenAI API key is missing or invalid on Render.)*"
