@@ -101,7 +101,7 @@ Students are compared against anonymized **top 10% performers** in their income 
 
 | Service | URL |
 |---------|-----|
-| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-uf74.vercel.app/) |
+| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-4x5c.vercel.app/) |
 | **Backend** | Deployed on Render |
 
 ### Demo Accounts
