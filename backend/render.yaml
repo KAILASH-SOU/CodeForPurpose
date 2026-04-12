@@ -1,11 +1,14 @@
 services:
   - type: web
-    name: natwest-ai-backend
+    name: natwest-safespend-backend
     runtime: python
-    buildCommand: uv sync
+    rootDir: backend
+    buildCommand: pip install uv && uv sync
     startCommand: uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        sync: false
+        sync: false        # Set manually in Render dashboard
       - key: OPENAI_API_KEY
-        sync: false
+        sync: false        # Set manually in Render dashboard
+      - key: PYTHON_VERSION
+        value: 3.12        # Render uses 3.12 by default, uv will handle the rest

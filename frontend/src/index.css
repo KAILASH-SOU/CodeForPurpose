@@ -3,59 +3,27 @@
 /*
   NatWest Brand Palette
   ─────────────────────
-  Deep Purple:  #42145F   (primary brand colour)
+  Deep Purple:  #42145F
   Mid Purple:   #6B2D8B
-  Magenta:      #C9006B   (secondary CTA / accent)
-  Almost black: #0C0A14
+  Magenta:      #C9006B
+  Background:   warm slate — not white, not dark
 */
 
-/* ── Dark theme (default) ─────────────────────────────────────────────── */
+/* ── Fixed moderate-light theme ─────────────────────────────────────────── */
 :root {
-  --bg:             #0C0A14;
-  --surface:        #19112A;
-  --surface-raised: #231840;
-  --border:         #38275A;
-  --border-strong:  #4D3A72;
-  --text-primary:   #F2EEFF;
-  --text-secondary: #9E8EC0;
-  --text-muted:     #6A5888;
-  --accent:         #9D4EDD;         /* bright purple — visible on dark bg */
-  --accent-dark:    #42145F;         /* NatWest official deep purple */
-  --accent-soft:    rgba(157, 78, 221, 0.12);
-  --accent-border:  rgba(157, 78, 221, 0.30);
-  --pink:           #C9006B;         /* NatWest magenta */
-  --pink-soft:      rgba(201, 0, 107, 0.12);
-  --pink-border:    rgba(201, 0, 107, 0.30);
-  --success:        #34D399;
-  --success-bg:     rgba(52, 211, 153, 0.10);
-  --success-border: rgba(52, 211, 153, 0.25);
-  --warning:        #FBBF24;
-  --warning-bg:     rgba(251, 191, 36, 0.10);
-  --warning-border: rgba(251, 191, 36, 0.25);
-  --danger:         #F87171;
-  --danger-bg:      rgba(248, 113, 113, 0.10);
-  --danger-border:  rgba(248, 113, 113, 0.25);
-  --shadow-sm:      0 1px 4px rgba(0,0,0,0.5);
-  --shadow-md:      0 6px 24px rgba(0,0,0,0.6);
-  --logo-bg:        #42145F;
-  --navbar-h:       56px;
-}
-
-/* ── Light theme ──────────────────────────────────────────────────────── */
-html[data-theme="light"] {
-  --bg:             #F7F3FF;
-  --surface:        #FFFFFF;
-  --surface-raised: #F0EAFA;
-  --border:         #E2D5F5;
-  --border-strong:  #C9B6E8;
-  --text-primary:   #1A0E2E;
-  --text-secondary: #5C4A78;
-  --text-muted:     #9E8EC0;
-  --accent:         #42145F;         /* NatWest deep purple */
+  --bg:             #F0EDF6;          /* warm lavender-grey background */
+  --surface:        #FAFAFE;          /* nearly-white cards */
+  --surface-raised: #EDE8F5;          /* slightly lifted surfaces */
+  --border:         #DDD6ED;
+  --border-strong:  #C4B8DF;
+  --text-primary:   #1C1130;          /* very dark purple-black */
+  --text-secondary: #5A4878;
+  --text-muted:     #9180AD;
+  --accent:         #42145F;          /* NatWest deep purple */
   --accent-dark:    #2D0D42;
   --accent-soft:    rgba(66, 20, 95, 0.08);
-  --accent-border:  rgba(66, 20, 95, 0.22);
-  --pink:           #C9006B;
+  --accent-border:  rgba(66, 20, 95, 0.20);
+  --pink:           #C9006B;          /* NatWest magenta */
   --pink-soft:      rgba(201, 0, 107, 0.08);
   --pink-border:    rgba(201, 0, 107, 0.22);
   --success:        #16A34A;
@@ -67,9 +35,10 @@ html[data-theme="light"] {
   --danger:         #DC2626;
   --danger-bg:      #FEF2F2;
   --danger-border:  #FECACA;
-  --shadow-sm:      0 1px 3px rgba(66,20,95,0.08);
-  --shadow-md:      0 4px 16px rgba(66,20,95,0.12);
+  --shadow-sm:      0 1px 4px rgba(66,20,95,0.08);
+  --shadow-md:      0 6px 24px rgba(66,20,95,0.13);
   --logo-bg:        #42145F;
+  --navbar-h:       56px;
 }
 
 /* ── Reset ────────────────────────────────────────────────────────────── */
@@ -84,7 +53,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
   line-height: 1.5;
-  transition: background 0.2s ease, color 0.2s ease;
 }
 
 #root { min-height: 100vh; display: flex; flex-direction: column; }
@@ -98,10 +66,10 @@ body {
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 64px;
   gap: 2px;
   z-index: 100;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 /* NatWest-style purple top accent line */
@@ -116,30 +84,28 @@ body {
 .topnav-logo {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 12px;
   margin-right: 6px;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
-.logo-mark {
-  width: 28px;
-  height: 28px;
-  background: var(--logo-bg);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-  flex-shrink: 0;
+.logo-image {
+  height: 30px;
+  width: 32px; /* Crops the horizontal SVG to just the cube icon */
+  object-fit: cover;
+  object-position: left;
+  
 }
+
+/* Logo Styles Updated for Official SVG Integration */
+.logo-mark { display: none; } /* Removed in favor of <img> */
 
 .logo-text {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   white-space: nowrap;
 }
 
@@ -169,7 +135,7 @@ body {
   font-family: inherit;
   white-space: nowrap;
   position: relative;
-  margin-top: 3px; /* offset for the top accent line space */
+  margin-top: 3px;
 }
 
 .topnav-item:hover {
@@ -262,7 +228,7 @@ body {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 28px 32px;
+  padding: 28px 64px;
 }
 
 /* ── Page header ──────────────────────────────────────────────────────── */
@@ -289,7 +255,6 @@ body {
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: var(--shadow-sm);
-  transition: background 0.2s, border-color 0.2s;
 }
 
 /* ── Safe-to-spend top grid ───────────────────────────────────────────── */
@@ -360,16 +325,10 @@ body {
 /* ── Dividers ─────────────────────────────────────────────────────────── */
 hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-/* ── Theme toggle pill ────────────────────────────────────────────────── */
-.theme-toggle-pill { width: 30px; height: 17px; border-radius: 99px; background: var(--border-strong); position: relative; transition: background 0.2s; flex-shrink: 0; display: inline-block; }
-.theme-toggle-pill.on { background: var(--accent); }
-.theme-toggle-pill::after { content: ''; position: absolute; top: 2.5px; left: 2.5px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: transform 0.18s; }
-.theme-toggle-pill.on::after { transform: translateX(13px); }
-
 /* ── Modal ────────────────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(28,17,48,0.45);
   z-index: 200;
   display: flex; align-items: center; justify-content: center;
   backdrop-filter: blur(4px);

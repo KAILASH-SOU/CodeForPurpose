@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   BarChart3, Users, Settings, LogOut,
-  LayoutDashboard, Trophy, Activity,
-  Sun, Moon, X
+  LayoutDashboard, Trophy, Activity, X
 } from 'lucide-react';
 import API_BASE from './api.js';
 import Landing from './pages/Landing.jsx';
@@ -17,14 +16,12 @@ import './index.css';
 
 // ── Root App ───────────────────────────────────────────────────────────────
 function App() {
-  const [page, setPage]   = useState('landing');
-  const [auth, setAuth]   = useState(null);
-  const [theme, setTheme] = useState(() => localStorage.getItem('natwest_theme') || 'dark');
+  const [page, setPage] = useState('landing');
+  const [auth, setAuth] = useState(null);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('natwest_theme', theme);
-  }, [theme]);
+    document.documentElement.removeAttribute('data-theme');
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem('natwest_auth');
@@ -33,17 +30,16 @@ function App() {
 
   const handleLogin  = (user_id, username) => { setAuth({ user_id, username }); setPage('dashboard'); };
   const handleLogout = () => { localStorage.removeItem('natwest_auth'); setAuth(null); setPage('landing'); };
-  const toggleTheme  = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
-  if (page === 'landing')                  return <Landing navigate={setPage} theme={theme} toggleTheme={toggleTheme} />;
-  if (page === 'login')                    return <Login   navigate={setPage} onLogin={handleLogin} />;
-  if (page === 'signup')                   return <Signup  navigate={setPage} />;
-  if (page === 'dashboard' && auth)        return <Dashboard auth={auth} onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />;
-  return <Landing navigate={setPage} theme={theme} toggleTheme={toggleTheme} />;
+  if (page === 'landing')           return <Landing navigate={setPage} />;
+  if (page === 'login')             return <Login   navigate={setPage} onLogin={handleLogin} />;
+  if (page === 'signup')            return <Signup  navigate={setPage} />;
+  if (page === 'dashboard' && auth) return <Dashboard auth={auth} onLogout={handleLogout} />;
+  return <Landing navigate={setPage} />;
 }
 
 // ── Settings Modal ─────────────────────────────────────────────────────────
-function SettingsModal({ username, dbStatus, theme, toggleTheme, onLogout, onClose }) {
+function SettingsModal({ username, dbStatus, onLogout, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -78,17 +74,7 @@ function SettingsModal({ username, dbStatus, theme, toggleTheme, onLogout, onClo
           </div>
         ))}
 
-        {/* Theme */}
-        <div style={{ margin: '18px 0' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>Appearance</div>
-          <button onClick={toggleTheme} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', background: 'var(--surface-raised)', border: '1px solid var(--border)', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 500 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {theme === 'dark' ? <Moon size={14} /> : <Sun size={14} />}
-              {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-            </div>
-            <div className={`theme-toggle-pill ${theme === 'dark' ? 'on' : ''}`} />
-          </button>
-        </div>
+
 
         <button
           onClick={() => { onLogout(); onClose(); }}
@@ -102,7 +88,7 @@ function SettingsModal({ username, dbStatus, theme, toggleTheme, onLogout, onClo
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
-function Dashboard({ auth, onLogout, theme, toggleTheme }) {
+function Dashboard({ auth, onLogout }) {
   const { user_id: userId, username } = auth;
   const [safeToSpend,     setSafeToSpend]     = useState(null);
   const [smaData,         setSmaData]         = useState([]);
@@ -155,14 +141,61 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
+  // Smart formatter for AI insights
+  const renderInsights = (text) => {
+    if (!text) return null;
+    
+    // Split into sections/lines
+    const lines = text.split('\n').filter(l => l.trim());
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {lines.map((line, i) => {
+          // Detect header
+          if (line.startsWith('###')) {
+            return <div key={i} style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px', borderLeft: '4px solid var(--accent)', paddingLeft: '12px' }}>
+              {line.replace('###', '').trim()}
+            </div>;
+          }
+          
+          // Detect bullet point
+          if (line.trim().startsWith('-')) {
+            let content = line.trim().substring(1).trim();
+            // Basic bolding parse
+            const parts = content.split('**');
+            return (
+              <div key={i} className="insight-item" style={{ 
+                padding: '16px', 
+                background: 'var(--surface-raised)', 
+                borderRadius: '10px', 
+                border: '1px solid var(--border)',
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'flex-start',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', marginTop: '6px', flexShrink: 0 }} />
+                <div style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
+                  {parts.map((p, idx) => idx % 2 === 1 ? <b key={idx} style={{ color: 'var(--text-primary)' }}>{p}</b> : p)}
+                </div>
+              </div>
+            );
+          }
+          
+          return <div key={i} style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{line}</div>;
+        })}
+      </div>
+    );
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* ── Top Navbar ── */}
       <nav className="topnav">
         {/* Logo */}
-        <div className="topnav-logo">
-          <div className="logo-mark">N</div>
-          <span className="logo-text">NatWest <span>AI</span></span>
+        <div className="topnav-logo" onClick={() => navigate('landing')}>
+          <img src="/Logo_Wh_NatWestGroupColleague-Hor.svg" alt="NatWest" className="logo-image" />
+          <span className="logo-text">NatWest <span>SafeSpend</span></span>
         </div>
 
         {/* Divider */}
@@ -188,10 +221,7 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
             <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'none' }}>{dbStatus}</span>
           </div>
 
-          {/* Theme toggle */}
-          <button className="icon-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
+
 
           {/* User chip */}
           <div className="user-chip">
@@ -222,7 +252,7 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
             </div>
             <span className="badge badge-pink">
               <Activity size={11} />
-              AI Active
+              SafeSpend Active
             </span>
           </div>
 
@@ -268,14 +298,15 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
               </div>
 
               {/* AI Insights */}
-              <div className="card fade-in" style={{ padding: '24px', marginBottom: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid var(--border)' }}>
-                  <Activity size={14} color="var(--accent)" />
-                  <span style={{ fontSize: '13px', fontWeight: 700 }}>AI Agent Insights</span>
+              <div className="card fade-in" style={{ padding: '24px', marginBottom: '8px', border: '1px solid var(--accent-soft)', background: 'linear-gradient(to bottom, var(--surface), var(--surface-raised))' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid var(--border)' }}>
+                  <Activity size={15} color="var(--accent)" />
+                  <span style={{ fontSize: '14px', fontWeight: 800, letterSpacing: '-0.2px' }}>SafeSpend Insights</span>
+                  <div style={{ marginLeft: 'auto', fontSize: '10px', background: 'var(--accent-soft)', color: 'var(--accent)', padding: '2px 8px', borderRadius: '10px', fontWeight: 700, textTransform: 'uppercase' }}>AI Enhanced</div>
                 </div>
                 {insights
-                  ? <div style={{ whiteSpace: 'pre-wrap', fontSize: '13px', lineHeight: 1.8, color: 'var(--text-secondary)' }}>{insights}</div>
-                  : <div style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '13px' }}>
+                  ? renderInsights(insights)
+                  : <div style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '13px', padding: '12px', textAlign: 'center' }}>
                       {dbStatus === 'Offline' ? 'Agent is offline.' : 'Generating insights from your transaction history...'}
                     </div>
                 }
@@ -291,8 +322,6 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
         <SettingsModal
           username={username}
           dbStatus={dbStatus}
-          theme={theme}
-          toggleTheme={toggleTheme}
           onLogout={onLogout}
           onClose={() => { setShowSettings(false); setActiveSection('dashboard'); }}
         />
