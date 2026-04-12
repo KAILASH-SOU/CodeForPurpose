@@ -1,88 +1,121 @@
 <div align="center">
-  <img src="docs/screenshots/landing.png" alt="NatWest SafeSpend Landing Page" width="100%" />
 
-  # NatWest SafeSpend
-  
-  **NatWest Hackathon Prototype** — AI-powered personal finance analytics designed for students and young professionals to eliminate financial ambiguity and accidental overdrafts.
-  
-  [![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)](#)
-  [![Backend](https://img.shields.io/badge/Backend-Render-black?logo=render)](#)
-  [![Database](https://img.shields.io/badge/Database-Neon-blue?logo=postgresql)](#)
-  [![Built with React](https://img.shields.io/badge/React-19-blue?logo=react)](#)
-  [![Built with FastAPI](https://img.shields.io/badge/FastAPI-Python-green?logo=fastapi)](#)
+# NatWest SafeSpend
 
-  [**Live Demo**](https://code-for-purpose-uf74.vercel.app/) • [**Getting Started**](#local-development)
-  
+**AI-powered personal finance analytics built for the NatWest Hackathon** — helping students and young professionals eliminate financial ambiguity, avoid accidental overdrafts, and benchmark their spending habits against top-performing peers.
+
+[![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)](#)
+[![Backend](https://img.shields.io/badge/Backend-Render-black?logo=render)](#)
+[![Database](https://img.shields.io/badge/Database-Neon-blue?logo=postgresql)](#)
+[![Built with React](https://img.shields.io/badge/React-19-blue?logo=react)](#)
+[![Built with FastAPI](https://img.shields.io/badge/FastAPI-Python-green?logo=fastapi)](#)
+
+[**Live Demo →**](https://code-for-purpose-uf74.vercel.app/) · [**Getting Started**](#-local-development)
+
 </div>
 
 ---
 
-##  Live Demo
-| Service | URL |
-|---------|-----|
-| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-uf74.vercel.app/) |
-| **Backend**  | Deployed on Render |
+## The Problem
+
+Students living on fixed monthly allowances frequently face a painfully simple question: *"Can I afford this?"* Traditional banking apps show a current balance but fail to account for upcoming bills, spending velocity, or peer context. The result? Unplanned overdrafts, anxiety, and poor financial habits that compound over decades.
+
+## Our Solution
+
+SafeSpend transforms raw transaction data into actionable intelligence. Instead of showing a static balance, it computes a **Safe to Spend** ceiling that aggressively pre-deducts upcoming bills, runs **Monte Carlo overdraft simulations** across 1,000+ scenarios in real-time, and leverages **LLM-powered agents** to deliver personalized, empathetic financial coaching — all benchmarked against the top 10% of a student's income cohort.
+
+---
+
+## App Walkthrough
+
+### Landing Page
+The entry point introduces SafeSpend's core value proposition and provides instant access to pre-seeded demo accounts for hackathon judges.
 
 <div align="center">
-  <img src="docs/screenshots/dashboard.png" alt="Dashboard Screenshot" width="100%" />
-  <sub><em>The main SafeSpend Dashboard — Safe to Spend balance, upcoming bills, and daily spending trend.</em></sub>
+  <img src="docs/screenshots/landing.png" alt="Landing Page" width="100%" />
 </div>
 
 ---
 
-##  Demo Accounts
-Experience the platform using our pre-seeded cohort data. Login with any of these accounts (password for all is: **`qwerty`**):
-
-| Username | Profile |
-|----------|---------|
-| `student1` | Tier 1 · Engineering — High income, savings-focused |
-| `student2` | Tier 2 · Arts — Mid income, variable spending |
-| `student3` | Tier 1 · Science — Moderate income, balanced habits |
-
----
-
-##  Features & Functionality
+### Signup & Demo Accounts
+New users can create accounts instantly. For the hackathon demo, three pre-seeded student profiles are available with one-click access — each representing a different income tier and spending personality.
 
 <div align="center">
-  <table>
-    <tr>
-      <td><img src="docs/screenshots/spending-trend.png" alt="Spending Trend & Overdraft Risk" width="100%" /></td>
-      <td><img src="docs/screenshots/peer-benchmarking.png" alt="Peer Benchmarking & AI Reality Check" width="100%" /></td>
-    </tr>
-    <tr>
-      <td><sub><em>Daily Spending Trend (7-day SMA) and Monte Carlo Overdraft Risk Simulation</em></sub></td>
-      <td><sub><em>Peer Benchmarking radar chart and AI-powered Reality Check</em></sub></td>
-    </tr>
-  </table>
+  <img src="docs/screenshots/signup.png" alt="Signup Page" width="80%" />
 </div>
 
-- **Safe to Spend** — A real-time balance forecast that aggressively deducts upcoming recurring bills to give you your *actual* spending limit.
--  **Daily Spending Trend** — Real-time 7-day Simple Moving Average chart mapped against spending behavior.
--  **Deterministic Overdraft Risk** — Fast Monte Carlo simulation engine. Runs 1,000 distinct financial pathways to forecast chronological overdraft probabilities (e.g., "18% risk of ₹0 balance").
--  **Peer Benchmarking** — Anonymized radar charting that contrasts a user's expense optimization against top 10% performers in their income/study cohort.
--  **SafeSpend AI Insights** — A personalized LangGraph agent that transforms raw numeric data into actionable, empathetic financial advice using LLMs.
--  **Interactive What-If Simulator** — A dynamic slider to forecast how altering your weekend spending habit influences your 5-year or 10-year wealth trajectory.
+---
+
+### Dashboard — Safe to Spend & Spending Trend
+The main dashboard surfaces two critical insights: a **Safe to Spend** balance (after deducting upcoming recurring bills) and a **7-day Simple Moving Average** spending trend chart that reveals whether expenses are accelerating or stabilizing.
+
+<div align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard with Safe to Spend and Spending Trend" width="100%" />
+</div>
+
+---
+
+### Overdraft Risk & Spending Analysis
+A deterministic **Monte Carlo simulation** engine runs 1,000 distinct financial pathways to forecast the probability of hitting ₹0 before the next income deposit. The risk score adapts dynamically based on real spending variance.
+
+<div align="center">
+  <img src="docs/screenshots/spending-trend.png" alt="Spending Trend and Overdraft Risk Simulation" width="100%" />
+</div>
+
+---
+
+### Peer Benchmarking & AI Reality Check
+Students are compared against anonymized **top 10% performers** in their income and study cohort via a radar chart. An LLM-powered **AI Reality Check** then synthesizes the gap analysis into 3 concrete, actionable bullets — honest but encouraging.
+
+<div align="center">
+  <img src="docs/screenshots/peer-benchmarking.png" alt="Peer Benchmarking and AI Reality Check" width="100%" />
+</div>
+
+---
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Safe to Spend** | Real-time balance forecast that pre-deducts upcoming recurring bills to show your *actual* spending ceiling |
+| **Daily Spending Trend** | 7-day Simple Moving Average chart mapped against daily spending behavior |
+| **Overdraft Risk Engine** | Monte Carlo simulation across 1,000 pathways — outputs a precise overdraft probability (e.g., "35.3% risk") |
+| **Peer Benchmarking** | Radar chart contrasting user metrics against top 10% performers in their income/study cohort |
+| **AI Reality Check** | LangGraph agent transforms raw analytics into personalized, empathetic financial coaching |
+| **What-If Simulator** | Interactive slider to forecast how changing weekend spending habits influences 5-year or 10-year wealth trajectory |
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|------|
+|-------|------------|
 | **Frontend** | React 19 + Vite, deployed globally on Vercel |
 | **Backend** | Python 3.11, FastAPI + LangGraph, deployed on Render |
 | **Database** | Neon (Serverless PostgreSQL) |
 | **AI / NLP** | OpenAI GPT integration orchestrated via LangChain/LangGraph |
 
-<div align="center">
-  <img src="docs/screenshots/signup.png" alt="Signup Page with Demo Accounts" width="60%" />
-  <br/>
-  <sub><em>Signup page with pre-seeded demo account quick-access cards</em></sub>
-</div>
+---
+
+## Live Demo
+
+| Service | URL |
+|---------|-----|
+| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-uf74.vercel.app/) |
+| **Backend** | Deployed on Render |
+
+### Demo Accounts
+Experience the platform using pre-seeded student profiles. Password for all accounts: **`qwerty`**
+
+| Username | Profile |
+|----------|---------|
+| `student1` | Tier 1 · Engineering — High income, savings-focused hostel student · ₹25,000/mo |
+| `student2` | Tier 2 · Arts — Mid income, high variable spending patterns · ₹12,000/mo |
+| `student3` | Tier 1 · Science — Moderate income, balanced spending habits · ₹18,000/mo |
 
 ---
 
-##  Local Development
+## 🛠 Local Development
 
 ### Prerequisites
 - Python 3.11+
@@ -99,7 +132,7 @@ uv sync
 # Start the FastAPI server locally
 uv run uvicorn app.main:app --reload
 ```
-> **Environment Configuration**: Set `DATABASE_URL` and `OPENAI_API_KEY` in a `.env` file within the `backend` directory.
+> **Environment Configuration**: Set `DATABASE_URL` and `OPENAI_API_KEY` in a `.env` file within the project root directory.
 
 ### Frontend Setup
 ```bash
@@ -113,7 +146,7 @@ npm run dev
 
 ---
 
-##  Environment Variables Guide
+## 🔐 Environment Variables Guide
 
 ### Backend (Render / Local)
 | Variable | Description |
