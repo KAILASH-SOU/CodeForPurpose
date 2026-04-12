@@ -10,7 +10,7 @@
 [![Built with React](https://img.shields.io/badge/React-19-blue?logo=react)](#)
 [![Built with FastAPI](https://img.shields.io/badge/FastAPI-Python-green?logo=fastapi)](#)
 
-[**Live Demo →**](https://code-for-purpose-uf74.vercel.app/) · [**Getting Started**](#-local-development)
+[**Live Demo →**](https://code-for-purpose-4x5c.vercel.app/) · [**Getting Started**](#-local-development)
 
 </div>
 
