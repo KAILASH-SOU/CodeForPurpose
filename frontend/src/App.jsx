@@ -4,6 +4,7 @@ import {
   LayoutDashboard, Trophy, Activity,
   Sun, Moon, X
 } from 'lucide-react';
+import API_BASE from './api.js';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
@@ -124,17 +125,17 @@ function Dashboard({ auth, onLogout, theme, toggleTheme }) {
 
     const go = async () => {
       try {
-        const r = await fetch(`http://localhost:8000/analytics/safe-to-spend/${userId}`);
+        const r = await fetch(`${API_BASE}/analytics/safe-to-spend/${userId}`);
         const d = await r.json();
         if (!r.ok || !d || d.message === 'No transaction history') {
           setHasTransactions(false); setDbStatus('Connected'); return;
         }
         setSafeToSpend(d); setHasTransactions(true);
 
-        const sm  = await (await fetch(`http://localhost:8000/analytics/sma/${userId}?k=7`)).json();
+        const sm  = await (await fetch(`${API_BASE}/analytics/sma/${userId}?k=7`)).json();
         setSmaData(sm.sma_data || []);
 
-        const ins = await (await fetch(`http://localhost:8000/agent/insights/${userId}`)).json();
+        const ins = await (await fetch(`${API_BASE}/agent/insights/${userId}`)).json();
         setInsights(ins.insights_summary);
         setDbStatus('Connected');
       } catch {

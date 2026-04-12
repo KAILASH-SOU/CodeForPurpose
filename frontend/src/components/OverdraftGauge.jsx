@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { AlertTriangle, ShieldCheck, AlertCircle } from 'lucide-react';
+import API_BASE from '../api.js';
 
 export default function OverdraftGauge({ userId }) {
   const [probability, setProbability] = useState(null);
@@ -8,7 +9,7 @@ export default function OverdraftGauge({ userId }) {
   const [loading, setLoading]         = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/analytics/overdraft-risk/${userId}`)
+    fetch(`${API_BASE}/analytics/overdraft-risk/${userId}`)
       .then(r => r.json())
       .then(d => {
         setProbability(d.probability_percentage);

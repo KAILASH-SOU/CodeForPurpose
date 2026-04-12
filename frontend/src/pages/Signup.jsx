@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import API_BASE from '../api.js';
+
 export default function Signup({ navigate }) {
   const [form, setForm]     = useState({ username: '', password: '' });
   const [error, setError]   = useState('');
@@ -9,7 +11,7 @@ export default function Signup({ navigate }) {
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(''); setLoading(true);
     try {
-      const res  = await fetch('http://localhost:8000/auth/signup', {
+      const res  = await fetch(`${API_BASE}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

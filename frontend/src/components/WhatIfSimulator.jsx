@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, ResponsiveContainer } from 'recharts';
 import { Info } from 'lucide-react';
+import API_BASE from '../api.js';
 
 export default function WhatIfSimulator({ userId }) {
   const [newRate, setNewRate]           = useState(20);
@@ -16,7 +17,7 @@ export default function WhatIfSimulator({ userId }) {
   const fetchData = async (rate) => {
     try {
       setLoading(true);
-      const res  = await fetch(`http://localhost:8000/analytics/what-if/${userId}?new_rate=${rate}`);
+      const res  = await fetch(`${API_BASE}/analytics/what-if/${userId}?new_rate=${rate}`);
       const data = await res.json();
       setProjectionData(data.projections);
       setCurrentRate(data.current_rate);

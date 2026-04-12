@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown, Users } from 'lucide-react';
+import API_BASE from '../api.js';
 
 export default function PeerBenchmark({ userId }) {
   const [data, setData]     = useState(null);
@@ -8,7 +9,7 @@ export default function PeerBenchmark({ userId }) {
   const [error, setError]   = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/analytics/reality-check/${userId}`)
+    fetch(`${API_BASE}/analytics/reality-check/${userId}`)
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(d => { setData(d); setLoading(false); })
       .catch(() => { setError('Benchmark data unavailable.'); setLoading(false); });
