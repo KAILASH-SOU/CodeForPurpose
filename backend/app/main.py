@@ -336,7 +336,7 @@ def get_reality_check(user_id: int, session: Session = Depends(get_session)):
             )
             reality_check_text = response.choices[0].message.content
         except Exception as e:
-            reality_check_text = "- Live API insights are currently offline.\n- Your API key was automatically revoked by GitHub security scanners as soon as the repo went public.\n- Please deploy a new OpenAI API key to Render to restore live insights!"
+            reality_check_text = f"API DEBUG INFO: {type(e).__name__} - {str(e)}"
 
         return {
             "user_id": user_id,
