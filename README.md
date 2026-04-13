@@ -73,6 +73,15 @@ Students are compared against anonymized **top 10% performers** in their income 
 
 ---
 
+### AI Chatbot & Transaction History
+The latest addition features a **Real-time AI Chatbot** that allows users to ask deep natural language questions about their finances (e.g., *"How can I be financially well in 5 years?"*). It sits alongside a clean, categorized **Transaction History** view for granular tracking.
+
+<div align="center">
+  <img src="docs/screenshots/chatbot-transactions.png" alt="AI Chatbot and Transaction History" width="100%" />
+</div>
+
+---
+
 ## Features
 
 | Feature | Description |
@@ -82,6 +91,8 @@ Students are compared against anonymized **top 10% performers** in their income 
 | **Overdraft Risk Engine** | Monte Carlo simulation across 1,000 pathways — outputs a precise overdraft probability (e.g., "35.3% risk") |
 | **Peer Benchmarking** | Radar chart contrasting user metrics against top 10% performers in their income/study cohort |
 | **AI Reality Check** | LangGraph agent transforms raw analytics into personalized, empathetic financial coaching |
+| **Interactive Chat** | Real-time AI chatbot for asking natural language questions about spending and financial goals |
+| **Transaction Tracker** | Categorized list of recent income and expenses for granular visibility |
 | **What-If Simulator** | Interactive slider to forecast how changing weekend spending habits influences 5-year or 10-year wealth trajectory |
 
 ---
@@ -101,7 +112,7 @@ Students are compared against anonymized **top 10% performers** in their income 
 
 | Service | URL |
 |---------|-----|
-| **Frontend** | [https://code-for-purpose-uf74.vercel.app/](https://code-for-purpose-4x5c.vercel.app/) |
+| **Frontend** | [https://code-for-purpose-4x5c.vercel.app/](https://code-for-purpose-4x5c.vercel.app/) |
 | **Backend** | Deployed on Render |
 
 ### Demo Accounts
