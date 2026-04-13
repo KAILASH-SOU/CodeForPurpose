@@ -152,6 +152,54 @@ def get_user_insights(user_id: int, session: Session = Depends(get_session)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+class ChatMessagePayload(BaseModel):
+    message: str
+    history: List[Dict[str, str]] = []
+
+@app.post("/agent/chat/{user_id}")
+def chat_with_assistant(user_id: int, req: ChatMessagePayload, session: Session = Depends(get_session)):
+    try:
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Fetch overdraft risk internally for context
+        od_risk = get_overdraft_risk(user_id, session)
+        risk_pct = od_risk.get("probability_percentage", 0.0)
+        
+        # Build prompt
+        client = OpenAI()
+        system_prompt = f"""
+        You are 'SafeSpend AI', a friendly and empathetic financial assistant for the user {user.username}.
+        Your goal is to help them understand their finances, specifically their overdraft risk and insights.
+        Currently, their calculated probability of overdrafting before their next income is {risk_pct}%.
+        Answer their question concisely and practically. Do not use overly formal banking language.
+        Always keep responses under exactly 4-5 sentences as it is meant for a compact chat widget.
+        
+        CRITICAL RULE: You are STRICTLY a financial assistant. If the user asks about ANYTHING outside of 
+        personal finance, spending habits, banking, or the dashboard features (such as writing code, 
+        general knowledge, unrelated trivia, etc.), you MUST politely decline to answer, stating that you 
+        are specifically tuned to assist with their NatWest SafeSpend profile and financial wellbeing.
+        """
+        
+        messages = [{"role": "system", "content": system_prompt}]
+        for h in req.history:
+            messages.append({"role": h["role"], "content": h["content"]})
+            
+        messages.append({"role": "user", "content": req.message})
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo-0125",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=250
+        )
+        
+        reply = response.choices[0].message.content
+        return {"reply": reply}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/analytics/what-if/{user_id}")
 def get_what_if_analysis(
     user_id: int, 
@@ -344,6 +392,44 @@ def get_reality_check(user_id: int, session: Session = Depends(get_session)):
             "user_profile": user_profile,
             "cohort_profile": cohort_profile,
             "reality_check": reality_check_text
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/transactions/{user_id}")
+def get_user_transactions(
+    user_id: int, 
+    limit: int = Query(20, description="Max transactions to return"),
+    session: Session = Depends(get_session)
+):
+    try:
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        statement = (
+            select(Transaction)
+            .where(Transaction.user_id == user_id)
+            .order_by(Transaction.timestamp.desc())
+            .limit(limit)
+        )
+        transactions = session.exec(statement).all()
+        
+        return {
+            "user_id": user_id,
+            "transactions": [
+                {
+                    "id": t.id,
+                    "amount": t.amount,
+                    "category": t.category,
+                    "merchant_name": t.merchant_name,
+                    "is_recurring": t.is_recurring,
+                    "timestamp": t.timestamp.isoformat()
+                }
+                for t in transactions
+            ]
         }
     except HTTPException:
         raise

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, ResponsiveContainer } from 'recharts';
-import { Info } from 'lucide-react';
+import { Info, Bot } from 'lucide-react';
 import API_BASE from '../api.js';
 
 export default function WhatIfSimulator({ userId }) {
@@ -106,6 +106,19 @@ export default function WhatIfSimulator({ userId }) {
           Assumes 7% annual compounding return (Indian benchmark). A {Math.abs(rateGap)}% difference in savings rate compounds to {fmt(Math.abs(diff))} over 10 years.
         </p>
       </div>
+
+      <button 
+        onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: 'Can you give me more insights on how adjusting my savings rate impacts long-term wealth?' }))}
+        style={{ 
+          marginTop: '16px', display: 'flex', alignItems: 'center', gap: '6px', 
+          padding: '8px 12px', background: 'var(--surface-raised)', border: '1px solid var(--border)', 
+          borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--accent)', cursor: 'pointer', transition: 'background 0.2s' 
+        }}
+        onMouseOver={(e) => e.currentTarget.style.background = 'var(--accent-soft)'}
+        onMouseOut={(e) => e.currentTarget.style.background = 'var(--surface-raised)'}
+      >
+        <Bot size={14} /> Ask AI for more insights
+      </button>
     </div>
   );
 }

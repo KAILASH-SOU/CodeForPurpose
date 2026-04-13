@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
-import { TrendingUp, TrendingDown, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Bot } from 'lucide-react';
 import API_BASE from '../api.js';
 
 export default function PeerBenchmark({ userId }) {
@@ -74,9 +74,24 @@ export default function PeerBenchmark({ userId }) {
           </div>
 
           {/* AI Reality Check */}
-          <div style={{ marginTop: '18px', padding: '14px 16px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '8px' }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>AI Reality Check</div>
-            <div style={{ fontSize: '13px', lineHeight: 1.7, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>{reality_check}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '18px' }}>
+            <div style={{ padding: '14px 16px', background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', borderRadius: '8px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>AI Reality Check</div>
+              <div style={{ fontSize: '13px', lineHeight: 1.7, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>{reality_check}</div>
+            </div>
+            
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: 'Can you give me more insights on my peer benchmarking?' }))}
+              style={{ 
+                alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px', 
+                padding: '8px 12px', background: 'var(--surface-raised)', border: '1px solid var(--border)', 
+                borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--accent)', cursor: 'pointer', transition: 'background 0.2s' 
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = 'var(--accent-soft)'}
+              onMouseOut={(e) => e.currentTarget.style.background = 'var(--surface-raised)'}
+            >
+              <Bot size={14} /> Ask AI for more insights
+            </button>
           </div>
         </div>
 

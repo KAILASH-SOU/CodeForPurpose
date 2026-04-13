@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { AlertTriangle, ShieldCheck, AlertCircle } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, AlertCircle, Bot } from 'lucide-react';
 import API_BASE from '../api.js';
 
 export default function OverdraftGauge({ userId }) {
@@ -92,7 +92,7 @@ export default function OverdraftGauge({ userId }) {
           </div>
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{
             padding: '16px',
             background: 'var(--bg)',
@@ -104,6 +104,19 @@ export default function OverdraftGauge({ userId }) {
           }}>
             {interpretation}
           </div>
+          
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: 'Can you give me more insights on my overdraft risk?' }))}
+            style={{ 
+              alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px', 
+              padding: '8px 12px', background: 'var(--surface-raised)', border: '1px solid var(--border)', 
+              borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--accent)', cursor: 'pointer', transition: 'background 0.2s' 
+            }}
+            onMouseOver={(e) => e.currentTarget.style.background = 'var(--accent-soft)'}
+            onMouseOut={(e) => e.currentTarget.style.background = 'var(--surface-raised)'}
+          >
+            <Bot size={14} /> Ask AI for more insights
+          </button>
         </div>
       </div>
     </div>

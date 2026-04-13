@@ -394,6 +394,7 @@ input:-webkit-autofill:focus {
 
 .fade-in   { animation: slideUp 0.3s ease both; }
 .stagger-1 { animation-delay: 0.04s; }
+.stagger-1-5 { animation-delay: 0.06s; }
 .stagger-2 { animation-delay: 0.08s; }
 .stagger-3 { animation-delay: 0.12s; }
 .stagger-4 { animation-delay: 0.16s; }

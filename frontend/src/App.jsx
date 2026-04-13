@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   BarChart3, Users, Settings, LogOut,
-  LayoutDashboard, Trophy, Activity, X
+  LayoutDashboard, Trophy, Activity, X, Receipt, Bot
 } from 'lucide-react';
 import API_BASE from './api.js';
 import Landing from './pages/Landing.jsx';
@@ -12,6 +12,8 @@ import SpendingChart from './components/SpendingChart';
 import WhatIfSimulator from './components/WhatIfSimulator';
 import OverdraftGauge from './components/OverdraftGauge';
 import PeerBenchmark from './components/PeerBenchmark';
+import TransactionHistory from './components/TransactionHistory';
+import ChatWidget from './components/ChatWidget';
 import './index.css';
 
 // ── Root App ───────────────────────────────────────────────────────────────
@@ -101,8 +103,16 @@ function Dashboard({ auth, onLogout }) {
   const scrollTo = (id, section) => {
     if (section === 'settings') { setShowSettings(true); setActiveSection('settings'); return; }
     setActiveSection(section);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    if (section === 'transactions') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   };
 
   useEffect(() => {
@@ -134,6 +144,7 @@ function Dashboard({ auth, onLogout }) {
   const navItems = [
     { id: 'section-dashboard', key: 'dashboard', Icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'section-analytics', key: 'analytics', Icon: BarChart3,       label: 'Analytics' },
+    { id: 'section-transactions', key: 'transactions', Icon: Receipt, label: 'Transactions' },
     { id: 'section-goals',     key: 'goals',     Icon: Trophy,           label: 'Goals' },
     { id: 'section-peers',     key: 'peers',     Icon: Users,            label: 'Peers' },
   ];
@@ -277,11 +288,19 @@ function Dashboard({ auth, onLogout }) {
           )}
 
           {/* Dashboard sections */}
-          {hasTransactions && (
+          {hasTransactions && activeSection === 'transactions' ? (
+            <div className="fade-in stagger-1">
+              <TransactionHistory userId={userId} limit={100} title="All Transactions" />
+            </div>
+          ) : hasTransactions && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
               <div id="section-dashboard" className="fade-in stagger-1">
                 <SafeToSpendCard data={safeToSpend} />
+              </div>
+
+              <div className="fade-in stagger-1-5">
+                <TransactionHistory userId={userId} limit={5} onViewAll={() => scrollTo('section-transactions', 'transactions')} />
               </div>
 
               <div id="section-analytics" className="fade-in stagger-2" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -305,7 +324,23 @@ function Dashboard({ auth, onLogout }) {
                   <div style={{ marginLeft: 'auto', fontSize: '10px', background: 'var(--accent-soft)', color: 'var(--accent)', padding: '2px 8px', borderRadius: '10px', fontWeight: 700, textTransform: 'uppercase' }}>AI Enhanced</div>
                 </div>
                 {insights
-                  ? renderInsights(insights)
+                  ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      {renderInsights(insights)}
+                      <button 
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: 'Can you give me more insights on my spending anomalies and hidden inflation?' }))}
+                        style={{ 
+                          alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '6px', 
+                          padding: '8px 12px', background: 'var(--surface-raised)', border: '1px solid var(--border)', 
+                          borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--accent)', cursor: 'pointer', transition: 'background 0.2s' 
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--accent-soft)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'var(--surface-raised)'}
+                      >
+                        <Bot size={14} /> Ask AI for more insights
+                      </button>
+                    </div>
+                  )
                   : <div style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '13px', padding: '12px', textAlign: 'center' }}>
                       {dbStatus === 'Offline' ? 'Agent is offline.' : 'Generating insights from your transaction history...'}
                     </div>
@@ -326,6 +361,9 @@ function Dashboard({ auth, onLogout }) {
           onClose={() => { setShowSettings(false); setActiveSection('dashboard'); }}
         />
       )}
+
+      {/* Floating Chat Widget */}
+      <ChatWidget userId={userId} />
     </div>
   );
 }
