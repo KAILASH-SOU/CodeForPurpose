@@ -39,7 +39,7 @@ export default function Landing({ navigate }) {
       }}>
         <FlaskConical size={14} color="#E8D5FF" style={{ flexShrink: 0 }} />
         <span style={{ fontSize: '12.5px', color: '#E8D5FF', fontWeight: 600, letterSpacing: '0.01em' }}>
-          🏦 <strong style={{ color: '#fff' }}>NatWest Hackathon Prototype</strong> — This is a live demo built for the NatWest SafeSpend Hackathon judges.
+          🏦 <strong style={{ color: '#fff' }}>NatWest Hackathon Prototype</strong> — This is a live demo.
           Pre-seeded hostel student transaction data is already loaded. Use the demo logins below — <strong style={{ color: '#F9A8D4' }}>password for all: qwerty</strong>
           <br />
           <span style={{ fontSize: '11px', opacity: 0.9 }}>

@@ -16,6 +16,11 @@
 
 ---
 
+> [!NOTE]
+> **Deployment Environment**: This prototype is hosted on the free tier of Vercel and Render. The backend server may enter a "sleep" state due to inactivity. If you encounter a delay during initial login or loading, please allow **30-60 seconds** for the service to wake up.
+
+---
+
 ## The Problem
 
 Students living on fixed monthly allowances frequently face a painfully simple question: *"Can I afford this?"* Traditional banking apps show a current balance but fail to account for upcoming bills, spending velocity, or peer context. The result? Unplanned overdrafts, anxiety, and poor financial habits that compound over decades.
