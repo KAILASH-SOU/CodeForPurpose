@@ -115,6 +115,13 @@ export default function Login({ navigate, onLogin }) {
           No account?{' '}
           <span onClick={() => navigate('signup')} style={{ color: 'var(--accent)', cursor: 'pointer', fontWeight: 600 }}>Create one</span>
         </p>
+
+        {/* Hosting Note */}
+        <div style={{ marginTop: '24px', padding: '14px', background: 'var(--accent-soft)', borderRadius: '10px', border: '1px solid var(--accent-border)' }}>
+          <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--accent)', lineHeight: '1.6', textAlign: 'center', fontWeight: 600 }}>
+            Note: We use free-tier hosting on Vercel & Render. The initial login may take 30-60 seconds as the service wakes up. Thank you for your patience.
+          </p>
+        </div>
       </div>
 
         {/* ── Demo Accounts Card ── */}

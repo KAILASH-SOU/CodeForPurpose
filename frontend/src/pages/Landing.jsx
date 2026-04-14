@@ -14,7 +14,7 @@ const stats = [
   { value: '< 1s',   label: 'SafeSpend insight time' },
 ];
 
-// Pre-seeded demo accounts for hackathon judges
+
 const demoAccounts = [
   { username: 'student1', cohort: 'Tier 1 · Engineering', income: '₹25,000/mo', desc: 'High income, savings-focused hostel student' },
   { username: 'student2', cohort: 'Tier 2 · Arts',        income: '₹12,000/mo', desc: 'Mid income, high variable spending patterns' },
@@ -41,6 +41,10 @@ export default function Landing({ navigate }) {
         <span style={{ fontSize: '12.5px', color: '#E8D5FF', fontWeight: 600, letterSpacing: '0.01em' }}>
           🏦 <strong style={{ color: '#fff' }}>NatWest Hackathon Prototype</strong> — This is a live demo built for the NatWest SafeSpend Hackathon judges.
           Pre-seeded hostel student transaction data is already loaded. Use the demo logins below — <strong style={{ color: '#F9A8D4' }}>password for all: qwerty</strong>
+          <br />
+          <span style={{ fontSize: '11px', opacity: 0.9 }}>
+            Note: We use free-tier hosting on Vercel and Render. Initial service "wake-up" may take 30-60 seconds.
+          </span>
         </span>
       </div>
 
@@ -103,6 +107,11 @@ export default function Landing({ navigate }) {
                 <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>{t}</span>
               </div>
             ))}
+            <div style={{ marginTop: '20px', padding: '12px', background: 'var(--accent-soft)', borderRadius: '8px', border: '1px solid var(--accent-border)' }}>
+              <p style={{ margin: 0, fontSize: '11px', color: 'var(--accent)', lineHeight: '1.5', textAlign: 'center', fontWeight: 500 }}>
+                Note: We use free-tier hosting on Vercel & Render. Initial login may take 30-60s for the service to wake up.
+              </p>
+            </div>
           </div>
 
           {/* CTAs */}
